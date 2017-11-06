@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import { AppContainer } from 'react-hot-loader'
 import Redbox from 'redbox-react'
 import configureStore from './store/configureStore'
@@ -11,9 +12,13 @@ import './styles/screen.scss'
 
 const store = configureStore()
 
-store.dispatch(addExpense({ description: 'Water Bill Bozo' }))
+store.dispatch(addExpense({ description: 'Water Bill Bozo', amount: 2500 }))
 store.dispatch(addExpense({ description: 'Gas Bill Bozo' }))
 store.dispatch(setTextFilter('Water'))
+
+setTimeout(() => {
+  store.dispatch(setTextFilter('Bill'))
+}, 3000)
 
 const state = store.getState()
 const visibleExpenses = getVisibleExpenses(state.expenses, state.filters)
@@ -29,7 +34,15 @@ const render = app => {
   )
 }
 
-render(<App />)
+// render(<App />)
+
+const jsx = (
+  <Provider store={store}>
+    <App />
+  </Provider>
+)
+
+render(jsx)
 
 if (module.hot) {
   module.hot.accept('./components/App', () => {
